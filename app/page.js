@@ -1,21 +1,17 @@
 "use client";
 import axios from "axios";
-import { atom } from "recoil";
 
-import { useState, useEffect, useRef } from "react";
+import { useState} from "react";
 import Image from "next/image";
 import { useQuery } from "react-query";
 
 export default function Home() {
   const [getData, setGetData] = useState([]);
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const floorRef = useRef(null);
+ 
 
   const { data, isLoading, error } = useQuery("data", async () => {
     const response = await axios.get("data.json");
     setGetData(response.data);
-    setLoading(false);
   });
 
   if (isLoading) return <p>Loading...</p>;
@@ -24,23 +20,7 @@ export default function Home() {
   console.log(getData);
   //
 
-  const handleObserver = (entries) => {
-    const target = entries[0];
-    if (target.isIntersecting && !loading) {
-      setPage((prevPage) => prevPage + 1);
-      setLoading(true);
-    }
-  };
-
-  const observer = new IntersectionObserver(handleObserver, {
-    root: null,
-    rootMargin: "0px",
-    threshold: 0.8,
-  });
-
-  if (floorRef.current) {
-    observer.observe(floorRef.current);
-  }
+  
 
   return (
     <>
@@ -68,8 +48,7 @@ export default function Home() {
           </div>
         ))}
       </main>
-      {loading && <p>Loading...</p>}
-      <div ref={floorRef}></div>
+      
     </>
   );
 }
